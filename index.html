@@ -44,12 +44,11 @@
   <!-- PRELOADER -->
   <div class="preloader" id="preloader" aria-hidden="true">
     <div class="preloader__inner">
-      <svg class="preloader__logo" viewBox="0 0 120 120">
-        <path pathLength="1" d="M75.05 26.64A44 44 0 1 1 44.95 26.64L49.4 38.87A31 31 0 1 0 70.6 38.87Z"/>
-        <path pathLength="1" d="M38 60.1 60 73.3 82 60.1V84.7Q68.8 83.8 60 92.6 51.2 83.8 38 84.7Z"/>
-        <path pathLength="1" d="M60 4 96 15 60 26 24 15Z"/>
-      </svg>
-      <div class="preloader__count"><span id="preloadCount">0</span>%</div>
+      <div class="preloader__mark">
+        <span class="preloader__orbit"></span>
+        <svg class="preloader__logo"><use href="#logo-mdm"/></svg>
+      </div>
+      <div class="preloader__bar"><span></span></div>
       <p class="preloader__phrase">Você pode tudo, menos desistir.</p>
     </div>
   </div>

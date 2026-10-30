@@ -18,7 +18,8 @@ export function initHero3D(container) {
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: !lowPower, powerPreference: 'high-performance' });
+    // celular: canvas transparente e menor (só a parte de cima do hero); o fundo vem do CSS
+    renderer = new THREE.WebGLRenderer({ antialias: !lowPower, alpha: isMobile, powerPreference: 'high-performance' });
   } catch (e) {
     document.documentElement.classList.add('no-webgl');
     return null;
@@ -30,7 +31,7 @@ export function initHero3D(container) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = makeBackground();
+  if (!isMobile) scene.background = makeBackground();
   scene.fog = new THREE.Fog(0x12031f, 9, 22);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -69,7 +70,7 @@ export function initHero3D(container) {
     clearcoat: 1, clearcoatRoughness: 0.1,
     emissive: 0x2a0870, emissiveIntensity: 0.5
   });
-  if (lowPower) { faceMat.iridescence = 0; faceMat.sheen = 0; }
+  if (lowPower) { faceMat.iridescence = 0; faceMat.sheen = 0; faceMat.clearcoat = 0; sideMat.clearcoat = 0; }
 
   const extrude = { depth: 0.24, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.035, bevelSegments: 6, curveSegments: 72 };
 
@@ -123,7 +124,7 @@ export function initHero3D(container) {
   cap.rotation.set(0.32, 0, -0.08);
   logoRoot.add(cap);
 
-  const capMat = new THREE.MeshPhysicalMaterial({ color: 0x24093f, roughness: 0.4, metalness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.2, sheen: lowPower ? 0 : 1, sheenColor: new THREE.Color(0x7b2cf0) });
+  const capMat = new THREE.MeshPhysicalMaterial({ color: 0x24093f, roughness: 0.4, metalness: 0.2, clearcoat: lowPower ? 0 : 0.8, clearcoatRoughness: 0.2, sheen: lowPower ? 0 : 1, sheenColor: new THREE.Color(0x7b2cf0) });
   const board = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.07, 1.5, 1, 1, 1), capMat);
   board.rotation.y = Math.PI / 4;
   cap.add(board);
@@ -232,6 +233,7 @@ export function initHero3D(container) {
   let last = performance.now();
   let elapsed = 0;
   const perf = { sum: 0, n: 0 };
+  let halfRate = false;
   const prevCapPos = new THREE.Vector3();
   const capWorld = new THREE.Vector3();
   const capVel = new THREE.Vector3();
@@ -257,14 +259,15 @@ export function initHero3D(container) {
     camera.updateProjectionMatrix();
     if (composer) composer.setSize(w, h);
     // desktop: logo à direita do texto; mobile: logo no topo
-    camera.position.z = w > 900 ? 9 : 11.5;
+    camera.position.z = w > 900 ? 9 : 10.5;
     const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     const halfW = halfH * camera.aspect;
     if (w > 900) {
       stage.position.set(halfW * 0.5, 0.05, 0);
       stage.scale.setScalar(THREE.MathUtils.clamp(halfW / 4.8, 0.7, 1));
     } else {
-      stage.position.set(0, halfH * 0.41, 0);
+      // o canvas no celular ocupa só o topo do hero: logo um pouco abaixo do centro para o capelo caber
+      stage.position.set(0, -halfH * 0.06, 0);
       stage.scale.setScalar(THREE.MathUtils.clamp(halfW / 3, 0.5, 0.9));
     }
     stage.userData.base = stage.position.clone();
@@ -288,9 +291,9 @@ export function initHero3D(container) {
   function tick(now) {
     raf = 0;
     if (!visible || document.hidden) return;
-    // celular: 30 fps bastam para o 3D e deixam folga para a rolagem;
-    // depois que o hero sai de vista quase todo, para de calcular e desenhar
-    if (isMobile && (now - last < 31 || scrollP > 0.45)) {
+    // 30 fps só se o aparelho não aguentar 60 mesmo com resolução menor (ver qualidade adaptativa);
+    // no celular, depois que o hero sai de vista quase todo, para de calcular e desenhar
+    if ((halfRate && now - last < 31) || (isMobile && scrollP > 0.45)) {
       if (scrollP > 0.45) last = now;
       raf = requestAnimationFrame(tick);
       return;
@@ -361,14 +364,17 @@ export function initHero3D(container) {
     camera.position.y += (0.2 - pointer.y * 0.35 - camera.position.y) * 0.04;
     camera.lookAt(base.x * 0.1, base.y * 0.2, 0);
 
-    // qualidade adaptativa: se a média passar de ~22ms/quadro, reduz a resolução uma vez
+    // qualidade adaptativa: média acima de ~22ms/quadro → 1º reduz resolução e partículas, 2º cai para 30 fps
     perf.sum += dt; perf.n++;
     if (perf.n === 90) {
-      if (perf.sum / perf.n > (isMobile ? 0.042 : 0.022) && pixelRatio > 0.9) {
+      const slow = perf.sum / perf.n > 0.022;
+      if (slow && pixelRatio > 0.9) {
         pixelRatio = Math.max(0.85, pixelRatio - 0.35);
         renderer.setPixelRatio(pixelRatio);
         layout();
         particles.geometry.setDrawRange(0, Math.floor(pCount / 2));
+      } else if (slow && !halfRate) {
+        halfRate = true;
       }
       perf.sum = 0; perf.n = 0;
     }
@@ -380,7 +386,14 @@ export function initHero3D(container) {
     raf = requestAnimationFrame(tick);
   }
 
+  // compila os shaders e sobe texturas/geometrias para a GPU ainda atrás da tela de carregamento,
+  // assim o primeiro quadro visível não engasga
+  const ready = (renderer.compileAsync ? renderer.compileAsync(scene, camera) : Promise.resolve(renderer.compile(scene, camera)))
+    .catch(() => {})
+    .then(() => { if (composer) composer.render(); else renderer.render(scene, camera); });
+
   return {
+    ready,
     start() {
       if (started) return;
       started = true;

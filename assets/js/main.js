@@ -65,40 +65,45 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
 const heroEl = $('#hero3d');
 let hero3d = null;
 const hero3dReady = import('./hero3d.js')
-  .then(m => { hero3d = m.initHero3D(heroEl); if (!hero3d) document.documentElement.classList.add('no-webgl'); })
+  .then(m => {
+    hero3d = m.initHero3D(heroEl);
+    if (!hero3d) { document.documentElement.classList.add('no-webgl'); return; }
+    return hero3d.ready; // shaders compilados antes de a tela de carregamento sair
+  })
   .catch(err => { console.warn('3D indisponível:', err); document.documentElement.classList.add('no-webgl'); });
 
 /* ---------- Preloader ---------- */
+// toda a animação da tela de carregamento é CSS (transform/opacity), que roda no compositor:
+// não congela enquanto o 3D é baixado e montado na thread principal
 const pre = $('#preloader');
-const count = $('#preloadCount');
-const minTime = new Promise(r => setTimeout(r, reduced ? 200 : 1700));
+const minTime = new Promise(r => setTimeout(r, reduced ? 200 : 1500));
 const loaded = new Promise(r => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })));
-const maxWait = new Promise(r => setTimeout(r, 4000));
-const counter = { v: 0 };
-gsap.to(counter, { v: 92, duration: 1.6, ease: 'power2.out', onUpdate: () => (count.textContent = Math.round(counter.v)) });
+const maxWait = new Promise(r => setTimeout(r, 5000));
 
 Promise.race([Promise.all([minTime, loaded, hero3dReady, document.fonts.ready]), maxWait]).then(() => {
-  gsap.to(counter, {
-    v: 100, duration: 0.3, onUpdate: () => (count.textContent = Math.round(counter.v)),
-    onComplete: () => {
-      gsap.to(pre, {
-        clipPath: 'inset(0 0 100% 0)', duration: reduced ? 0.01 : 1, ease: 'expo.inOut',
-        onComplete: () => { pre.remove(); document.body.classList.remove('is-loading'); lenis?.start(); }
-      });
-      setTimeout(playHeroIntro, reduced ? 0 : 350);
-    }
-  });
+  pre.classList.add('is-done');
+  ScrollTrigger.refresh(); // mede o layout final (fontes carregadas) ainda atrás da cortina
+  // deixa a barra completar, inicia o 3D por baixo e só então sobe a cortina
+  setTimeout(() => {
+    hero3d?.start();
+    // espera o 1º quadro do 3D ser pintado (2 rAF); o timeout cobre aba em segundo plano, onde rAF não roda
+    const painted = new Promise(r => { requestAnimationFrame(() => requestAnimationFrame(r)); setTimeout(r, 150); });
+    painted.then(() => {
+      pre.classList.add('is-leaving');
+      setTimeout(playHeroIntro, reduced ? 0 : 280);
+      const finish = () => { if (!pre.isConnected) return; pre.remove(); document.body.classList.remove('is-loading'); lenis?.start(); };
+      pre.addEventListener('transitionend', e => { if (e.target === pre) finish(); });
+      setTimeout(finish, 1400);
+    });
+  }, reduced ? 0 : 320);
 });
 
 function playHeroIntro() {
   hero3dReady.then(() => hero3d?.start());
-  const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-  tl.from('.hero__title .line > span', { yPercent: 115, rotate: 4, duration: 1.3, stagger: 0.09 })
-    .from('[data-hero-in]', { y: 30, opacity: 0, duration: 1, stagger: 0.08 }, 0.25)
-    .from('.nav', { y: -30, opacity: 0, duration: 1 }, 0.2)
-    .from('.chip3d', { scale: 0, opacity: 0, duration: 1, stagger: 0.12, ease: 'back.out(2)' }, 0.6);
-  ScrollTrigger.refresh();
+  // entrada do texto também em transição CSS (compositor), para não disputar a thread com o 3D
+  document.documentElement.classList.add('hero-in');
 }
+$$('[data-hero-in]').forEach((el, i) => { el.style.transitionDelay = `${250 + i * 80}ms`; });
 
 /* ---------- Hero: scroll e chips ---------- */
 ScrollTrigger.create({
