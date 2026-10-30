@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Melhores do Mundo Cursos | Pré-ENEM, Pré-SSA e Carreiras Policiais em Recife</title>
+  <meta name="description" content="Há 14 anos transformando sonhos em conquistas. Pré-ENEM, Pré-SSA, Carreiras Policiais, Reforço Escolar e MDM Kids em Recife. Faça sua pré-matrícula online.">
+  <!-- Versão de demonstração: remover a linha abaixo quando o MDM aprovar o site -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#12031f">
+  <meta property="og:title" content="Melhores do Mundo Cursos — Você pode tudo, menos desistir.">
+  <meta property="og:description" content="Pré-ENEM, Pré-SSA, Carreiras Policiais e Reforço Escolar em Recife. Matrículas 2027 abertas.">
+  <meta property="og:image" content="assets/img/alunos.jpg">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%237B2CF0'/%3E%3Cpath fill='white' d='M75.05 26.64A44 44 0 1 1 44.95 26.64L49.4 38.87A31 31 0 1 0 70.6 38.87Z M38 60.1 60 73.3 82 60.1V84.7Q68.8 83.8 60 92.6 51.2 83.8 38 84.7Z M60 4 96 15 60 26 24 15Z'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Logo reutilizável -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="logo-mdm" viewBox="0 0 120 120">
+      <path fill="currentColor" d="M75.05 26.64A44 44 0 1 1 44.95 26.64L49.4 38.87A31 31 0 1 0 70.6 38.87Z"/>
+      <path fill="currentColor" d="M38 60.1 60 73.3 82 60.1V84.7Q68.8 83.8 60 92.6 51.2 83.8 38 84.7Z"/>
+      <path fill="currentColor" d="M60 4 96 15 60 26 24 15Z"/>
+      <path fill="currentColor" d="M42 19v6q18 9 36 0v-6l-18 6z" opacity=".85"/>
+      <path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" d="M96 15v14"/>
+      <circle cx="96" cy="31.5" r="3.2" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <svg class="preloader__logo" viewBox="0 0 120 120">
+        <path pathLength="1" d="M75.05 26.64A44 44 0 1 1 44.95 26.64L49.4 38.87A31 31 0 1 0 70.6 38.87Z"/>
+        <path pathLength="1" d="M38 60.1 60 73.3 82 60.1V84.7Q68.8 83.8 60 92.6 51.2 83.8 38 84.7Z"/>
+        <path pathLength="1" d="M60 4 96 15 60 26 24 15Z"/>
+      </svg>
+      <div class="preloader__count"><span id="preloadCount">0</span>%</div>
+      <p class="preloader__phrase">Você pode tudo, menos desistir.</p>
+    </div>
+  </div>
+
+  <div class="cursor" aria-hidden="true"><div class="cursor__dot"></div><div class="cursor__ring"></div></div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="#topo" class="brand" aria-label="Melhores do Mundo Cursos — início">
+      <span class="brand__mark"><svg><use href="#logo-mdm"/></svg></span>
+      <span class="brand__text"><strong>Melhores <em>do</em> Mundo</strong><small>cursos e preparatórios</small></span>
+    </a>
+    <nav class="nav__links" aria-label="Principal">
+      <a href="#cursos">Cursos</a>
+      <a href="#metodo">Método</a>
+      <a href="#sonhos">Nossa história</a>
+      <a href="#aprovado">Card de aprovado</a>
+      <a href="#unidade">Unidade</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm hide-sm" href="https://wa.me/5581987706195" target="_blank" rel="noopener" data-wa>Falar no WhatsApp</a>
+      <button class="btn btn--yellow btn--sm" data-matricula>Matricule-se</button>
+      <button class="nav__burger" id="burger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#cursos">Cursos</a>
+    <a href="#metodo">Método</a>
+    <a href="#sonhos">Nossa história</a>
+    <a href="#aprovado">Card de aprovado</a>
+    <a href="#unidade">Unidade</a>
+    <a href="#faq">Dúvidas</a>
+    <button class="btn btn--yellow btn--lg" data-matricula>Fazer minha matrícula</button>
+  </div>
+
+  <main id="topo">
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero__canvas" id="hero3d" aria-hidden="true">
+        <svg class="hero__fallback"><use href="#logo-mdm"/></svg>
+      </div>
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <div class="hero__content container">
+        <span class="pill pill--live" data-hero-in><i></i> Matrículas <b>2027</b> abertas</span>
+        <h1 class="hero__title">
+          <span class="line"><span data-split>Você pode</span></span>
+          <span class="line"><span data-split>tudo, menos</span></span>
+          <span class="line"><span data-split class="hl">desistir.</span></span>
+        </h1>
+        <p class="hero__lead" data-hero-in>Há 14 anos transformando sonhos em conquistas. Pré-ENEM, Pré-SSA, Carreiras Policiais e Reforço Escolar com quem já preparou <strong>mais de 5.000 alunos</strong> em Recife.</p>
+        <div class="hero__ctas" data-hero-in>
+          <button class="btn btn--yellow btn--lg magnetic" data-matricula>
+            Garantir minha vaga
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <a class="btn btn--glass btn--lg" href="#cursos">Conhecer os cursos</a>
+        </div>
+        <ul class="hero__proof" data-hero-in>
+          <li><b>14</b><span>anos de história</span></li>
+          <li><b>+5 mil</b><span>alunos preparados</span></li>
+          <li><b>4,9★</b><span>avaliação no Google</span></li>
+        </ul>
+      </div>
+
+      <div class="hero__chips" aria-hidden="true">
+        <span class="chip3d" data-depth="0.6">ENEM</span>
+        <span class="chip3d" data-depth="1">SSA • UPE</span>
+        <span class="chip3d" data-depth="0.8">Redação</span>
+      </div>
+
+      <a href="#cursos" class="scroll-hint" aria-label="Rolar para os cursos"><span></span></a>
+    </section>
+
+    <!-- MARQUEE -->
+    <section class="tape" aria-label="O que preparamos">
+      <div class="tape__row">
+        <div class="tape__track">
+          <span>Pré-ENEM</span><i>✦</i><span>Pré-SSA</span><i>✦</i><span>Carreiras Policiais</span><i>✦</i><span>Reforço Escolar</span><i>✦</i><span>Redação</span><i>✦</i><span>MDM Kids</span><i>✦</i>
+          <span>Pré-ENEM</span><i>✦</i><span>Pré-SSA</span><i>✦</i><span>Carreiras Policiais</span><i>✦</i><span>Reforço Escolar</span><i>✦</i><span>Redação</span><i>✦</i><span>MDM Kids</span><i>✦</i>
+        </div>
+      </div>
+      <div class="tape__row tape__row--alt" aria-hidden="true">
+        <div class="tape__track tape__track--rev">
+          <span>Foco em resultados</span><i>●</i><span>O roxinho que aprova</span><i>●</i><span>Somos mais que um curso</span><i>●</i><span>Realizamos sonhos</span><i>●</i>
+          <span>Foco em resultados</span><i>●</i><span>O roxinho que aprova</span><i>●</i><span>Somos mais que um curso</span><i>●</i><span>Realizamos sonhos</span><i>●</i>
+        </div>
+      </div>
+    </section>
+
+    <!-- NÚMEROS -->
+    <section class="stats container" aria-label="Números do MDM">
+      <div class="stat" data-reveal><b data-count="14">0</b><span>anos transformando sonhos em conquistas</span></div>
+      <div class="stat" data-reveal><b data-count="5000" data-prefix="+" data-format="milhar">0</b><span>alunos preparados para o sucesso</span></div>
+      <div class="stat" data-reveal><b data-count="13.7" data-decimals="1" data-suffix=" mil">0</b><span>seguidores acompanhando o dia a dia</span></div>
+      <div class="stat" data-reveal><b data-count="5" data-suffix=" frentes">0</b><span>ENEM, SSA, policiais, reforço e kids</span></div>
+    </section>
+
+    <!-- CURSOS -->
+    <section class="section courses" id="cursos">
+      <div class="container">
+        <header class="section__head" data-reveal>
+          <span class="eyebrow">Escolha seu caminho</span>
+          <h2>Um curso para cada <span class="hl">sonho</span>.</h2>
+          <p>Do primeiro ano do ensino médio à farda: monte sua preparação com quem conhece de perto as provas de Pernambuco.</p>
+        </header>
+        <div class="courses__grid" id="coursesGrid"><!-- gerado por main.js a partir do config --></div>
+      </div>
+    </section>
+
+    <!-- MÉTODO: carrossel 3D -->
+    <section class="method" id="metodo">
+      <div class="method__pin">
+        <header class="method__head container" data-reveal>
+          <span class="eyebrow eyebrow--light">O método MDM</span>
+          <h2>Tudo o que te leva da dúvida à <span class="hl">aprovação</span>.</h2>
+        </header>
+        <div class="ring-stage">
+          <div class="ring" id="ring">
+            <article class="ring__card"><span class="ring__n">01</span><h3>Simulados no padrão da prova</h3><p>ENEM e SSA cronometrados, para você chegar no dia já sabendo o ritmo.</p></article>
+            <article class="ring__card"><span class="ring__n">02</span><h3>Redação com correção</h3><p>Texto corrigido e comentado até a estrutura virar hábito.</p></article>
+            <article class="ring__card"><span class="ring__n">03</span><h3>Fichas-resumo</h3><p>O conteúdo que mais cai, condensado para revisar em minutos.</p></article>
+            <article class="ring__card"><span class="ring__n">04</span><h3>Aulões e eventos</h3><p>Aulão da virada, revisões e momentos que fazem a turma virar time.</p></article>
+            <article class="ring__card"><span class="ring__n">05</span><h3>Plantão de dúvidas</h3><p>Travou numa questão? Tem professor perto para destravar.</p></article>
+            <article class="ring__card"><span class="ring__n">06</span><h3>Acompanhamento de perto</h3><p>Aqui você tem nome, não número. A gente acompanha a sua evolução.</p></article>
+            <article class="ring__card"><span class="ring__n">07</span><h3>Professores que vibram</h3><p>Equipe que conhece ENEM, SSA e concursos e torce junto com você.</p></article>
+            <article class="ring__card"><span class="ring__n">08</span><h3>Saúde mental na reta final</h3><p>Rotina, descanso e cuidado — porque cérebro cansado não fixa conteúdo.</p></article>
+          </div>
+        </div>
+        <p class="method__hint">Role para girar <span aria-hidden="true">↻</span></p>
+      </div>
+    </section>
+
+    <!-- SONHOS / FOTO -->
+    <section class="section dreams" id="sonhos">
+      <div class="container dreams__grid">
+        <div class="dreams__photo" id="dreamsPhoto" data-reveal>
+          <div class="dreams__layer dreams__layer--back" aria-hidden="true"><svg><use href="#logo-mdm"/></svg></div>
+          <img src="assets/img/alunos.jpg" alt="Três alunos do MDM sorrindo com a camisa 'Você pode tudo, menos desistir'" width="512" height="640" loading="lazy">
+          <span class="float-pill fp1">Pré-ENEM</span>
+          <span class="float-pill fp2">Pré-SSA</span>
+          <span class="float-pill fp3">Aprovado(a) ✓</span>
+        </div>
+        <div class="dreams__text">
+          <span class="eyebrow" data-reveal>Nossa história</span>
+          <h2 data-reveal>Somos mais que um curso, <span class="hl">realizamos sonhos.</span></h2>
+          <p data-reveal>Há 14 anos o roxinho acompanha estudantes de Recife e região na fase mais decisiva da vida. Mais de 5.000 alunos já passaram pelas nossas salas — e cada aprovação no SISU, no SSA ou num concurso é comemorada como se fosse nossa.</p>
+          <p data-reveal>A camisa diz tudo: <strong>você pode tudo, menos desistir.</strong> O resto, a gente constrói junto.</p>
+          <div class="dreams__ctas" data-reveal>
+            <button class="btn btn--purple btn--lg" data-matricula>Quero fazer parte</button>
+            <a class="btn btn--line btn--lg" href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener">Ver o dia a dia</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD DE APROVADO -->
+    <section class="section approved" id="aprovado">
+      <div class="container approved__grid">
+        <div class="approved__text">
+          <span class="eyebrow eyebrow--light" data-reveal>Visualize sua aprovação</span>
+          <h2 data-reveal>Crie agora o seu <span class="hl">card de aprovado</span>.</h2>
+          <p data-reveal>Digite seu nome, escolha o curso e a universidade dos sonhos. Salve o card, coloque de fundo de tela e deixe ele te lembrar todo dia por que você está estudando.</p>
+          <form class="approved__form" id="approvedForm" data-reveal autocomplete="off">
+            <label>Seu nome
+              <input name="nome" maxlength="28" placeholder="Ex.: Maria Alice" value="">
+            </label>
+            <div class="approved__row">
+              <label>Curso dos sonhos
+                <select name="curso">
+                  <option>Medicina</option><option>Direito</option><option>Engenharia</option><option>Odontologia</option><option>Psicologia</option><option>Enfermagem</option><option>Arquitetura</option><option>Ciência da Computação</option><option>Medicina Veterinária</option><option>Polícia Militar</option><option>Bombeiro Militar</option>
+                </select>
+              </label>
+              <label>Onde
+                <select name="univ">
+                  <option>UFPE</option><option>UPE</option><option>UFRPE</option><option>IFPE</option><option>UNIVASF</option><option>PMPE</option><option>CBMPE</option>
+                </select>
+              </label>
+            </div>
+            <div class="approved__actions">
+              <button type="button" class="btn btn--yellow" id="downloadCard">Baixar meu card</button>
+              <button type="button" class="btn btn--glass" data-matricula>Agora torne real →</button>
+            </div>
+          </form>
+        </div>
+        <div class="approved__stage" data-reveal>
+          <div class="acard" id="acard">
+            <div class="acard__inner">
+              <div class="acard__face acard__front">
+                <div class="acard__shine"></div>
+                <div class="acard__top">
+                  <svg class="acard__logo"><use href="#logo-mdm"/></svg>
+                  <span>Melhores do Mundo</span>
+                  <b>2027</b>
+                </div>
+                <div class="acard__stamp">APROVADO(A)</div>
+                <div class="acard__name" id="acardName">Seu nome aqui</div>
+                <div class="acard__course"><span id="acardCurso">Medicina</span> • <span id="acardUniv">UFPE</span></div>
+                <div class="acard__foot">Você pode tudo, menos desistir.</div>
+              </div>
+              <div class="acard__face acard__back">
+                <svg><use href="#logo-mdm"/></svg>
+                <p>O roxinho que aprova.</p>
+              </div>
+            </div>
+          </div>
+          <p class="approved__tip">Passe o mouse ou toque no card</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTAGRAM -->
+    <section class="section insta" id="instagram">
+      <div class="container">
+        <header class="section__head section__head--row" data-reveal>
+          <div>
+            <span class="eyebrow">@mdmpreoficial</span>
+            <h2>O dia a dia do <span class="hl">roxinho</span>.</h2>
+          </div>
+          <a class="btn btn--purple" href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener">Seguir no Instagram</a>
+        </header>
+        <div class="highlights" data-reveal>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>🎓</span></span>Aulão 2026</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>💜</span></span>Dia a dia</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>📅</span></span>Eventos</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>👥</span></span>Time</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>🏆</span></span>Aprovados</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>💬</span></span>Depoimentos</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>📝</span></span>Redações</a>
+          <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" class="hlt"><span class="hlt__ring"><span>📚</span></span>Fichas-resumo</a>
+        </div>
+        <div class="insta__grid">
+          <a class="insta__post" href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" data-reveal><img src="assets/img/post-sonhos.jpg" alt="Post do MDM: Somos mais que um curso, realizamos sonhos" loading="lazy" width="512" height="640"></a>
+          <a class="insta__post" href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener" data-reveal><img src="assets/img/alunos.jpg" alt="Alunos do MDM" loading="lazy" width="512" height="640"></a>
+          <div class="insta__post insta__post--cta" data-reveal>
+            <p>Depoimentos, aprovados, aulões e bastidores. Tudo acontece por lá.</p>
+            <div class="insta__handles">
+              <a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener">@mdmpreoficial</a>
+              <a href="https://www.instagram.com/mdmkidsoficial/" target="_blank" rel="noopener">@mdmkidsoficial</a>
+              <a href="https://www.instagram.com/mdm.carreiraspoliciais/" target="_blank" rel="noopener">@mdm.carreiraspoliciais</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIDADE -->
+    <section class="section place" id="unidade">
+      <div class="container place__grid">
+        <div class="place__info" data-reveal>
+          <span class="eyebrow">Venha conhecer</span>
+          <h2>A sua sala está <span class="hl">esperando</span>.</h2>
+          <ul class="place__list">
+            <li><span class="ico">📍</span><div><b>Endereço</b><p data-cfg="endereco">Rua do Riachuelo, 529 – Boa Vista, Recife – PE</p></div></li>
+            <li><span class="ico">💬</span><div><b>WhatsApp da secretaria</b><p><a href="https://wa.me/5581987706195" target="_blank" rel="noopener" data-wa data-cfg="whatsappExibicao">(81) 9 8770-6195</a></p></div></li>
+            <li><span class="ico">✉️</span><div><b>Ouvidoria</b><p><a href="mailto:ouvidoriamdm@melhoresdomundocursos.com.br" data-cfg="email">ouvidoriamdm@melhoresdomundocursos.com.br</a></p></div></li>
+          </ul>
+          <div class="place__ctas">
+            <button class="btn btn--purple btn--lg" data-matricula>Fazer pré-matrícula</button>
+            <a class="btn btn--line btn--lg" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Rua+do+Riachuelo+529+Boa+Vista+Recife+PE">Como chegar</a>
+          </div>
+        </div>
+        <div class="place__map" data-reveal>
+          <iframe title="Mapa da unidade MDM" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Rua+do+Riachuelo,+529+-+Boa+Vista,+Recife+-+PE&output=embed"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section faq" id="faq">
+      <div class="container faq__grid">
+        <header class="section__head" data-reveal>
+          <span class="eyebrow">Dúvidas frequentes</span>
+          <h2>Ficou alguma <span class="hl">dúvida</span>?</h2>
+          <p>Se não estiver aqui, chama a gente no WhatsApp — a secretaria responde rapidinho.</p>
+          <a class="btn btn--line" href="https://wa.me/5581987706195" target="_blank" rel="noopener" data-wa>Perguntar no WhatsApp</a>
+        </header>
+        <div class="faq__list">
+          <details data-reveal>
+            <summary>Como funciona a matrícula pelo site?</summary>
+            <p>Você escolhe o curso e o turno, preenche seus dados em 4 passos e recebe um número de protocolo. Na hora, já pode confirmar com a secretaria pelo WhatsApp, que te passa os valores, as condições e os próximos passos.</p>
+          </details>
+          <details data-reveal>
+            <summary>Qual a diferença entre o Pré-ENEM e o Pré-SSA?</summary>
+            <p>O ENEM é uma prova única, usada no SISU, ProUni e Fies. O SSA é o Sistema Seriado de Avaliação da UPE, feito em três etapas ao longo do 1º, 2º e 3º ano do ensino médio. Cada turma é organizada para o formato de cada prova.</p>
+          </details>
+          <details data-reveal>
+            <summary>Posso fazer ENEM e SSA ao mesmo tempo?</summary>
+            <p>Pode — boa parte do conteúdo conversa entre as duas provas. Na pré-matrícula, escolha o curso principal e conte na observação; a secretaria te ajuda a montar a melhor combinação.</p>
+          </details>
+          <details data-reveal>
+            <summary>Vocês têm preparatório para concursos policiais?</summary>
+            <p>Sim. O MDM Carreiras Policiais tem turmas iniciante e avançada. Acompanhe as novidades em @mdm.carreiraspoliciais.</p>
+          </details>
+          <details data-reveal>
+            <summary>Quais são os valores?</summary>
+            <p>Os valores variam por curso e turno. Ao finalizar a pré-matrícula, a secretaria te envia as condições atualizadas pelo WhatsApp — sem compromisso.</p>
+          </details>
+          <details data-reveal>
+            <summary>A pré-matrícula garante a minha vaga?</summary>
+            <p>Ela reserva o seu interesse com prioridade de atendimento. A vaga é confirmada quando a secretaria finaliza a matrícula com você.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="final" id="final">
+      <div class="final__logo3d" aria-hidden="true" id="logoStack"></div>
+      <div class="container final__inner">
+        <span class="pill pill--live"><i></i> Turmas {ANO} formando agora</span>
+        <h2 data-reveal>Sua aprovação começa com <span class="hl">um clique</span>.</h2>
+        <p data-reveal>Leva menos de 2 minutos. A secretaria confirma tudo com você pelo WhatsApp.</p>
+        <button class="btn btn--yellow btn--xl magnetic" data-matricula data-reveal>Fazer minha pré-matrícula</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <a href="#topo" class="brand brand--footer">
+          <span class="brand__mark"><svg><use href="#logo-mdm"/></svg></span>
+          <span class="brand__text"><strong>Melhores <em>do</em> Mundo</strong><small>cursos e preparatórios</small></span>
+        </a>
+        <p class="footer__claim">Transformando sonhos em conquistas há 14 anos.</p>
+      </div>
+      <div>
+        <h4>Cursos</h4>
+        <ul><li><a href="#cursos">Pré-ENEM</a></li><li><a href="#cursos">Pré-SSA</a></li><li><a href="#cursos">Carreiras Policiais</a></li><li><a href="#cursos">Reforço Escolar</a></li><li><a href="#cursos">MDM Kids</a></li></ul>
+      </div>
+      <div>
+        <h4>Redes</h4>
+        <ul><li><a href="https://www.instagram.com/mdmpreoficial/" target="_blank" rel="noopener">@mdmpreoficial</a></li><li><a href="https://www.instagram.com/mdmkidsoficial/" target="_blank" rel="noopener">@mdmkidsoficial</a></li><li><a href="https://www.instagram.com/mdm.carreiraspoliciais/" target="_blank" rel="noopener">@mdm.carreiraspoliciais</a></li></ul>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul><li><a href="https://wa.me/5581987706195" target="_blank" rel="noopener" data-wa>(81) 9 8770-6195</a></li><li data-cfg="endereco">Rua do Riachuelo, 529 – Boa Vista, Recife – PE</li></ul>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year">2026</span> Melhores do Mundo Cursos. Todos os direitos reservados.</span>
+      <a href="#topo">Voltar ao topo ↑</a>
+    </div>
+  </footer>
+
+  <!-- WhatsApp flutuante + barra mobile -->
+  <a class="wa-float" href="https://wa.me/5581987706195" target="_blank" rel="noopener" aria-label="Falar no WhatsApp" data-wa>
+    <svg viewBox="0 0 32 32" width="28" height="28"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.1-1.2 2.8 1.2 3.2 1.4 3.5 2.4 3.7 5.8 5.2c2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5s.3-1.4.2-1.5-.3-.2-.6-.3z"/></svg>
+  </a>
+  <div class="mobile-cta"><button class="btn btn--yellow btn--block" data-matricula>Fazer minha matrícula</button></div>
+
+  <!-- MATRÍCULA -->
+  <dialog class="enroll" id="enroll" aria-labelledby="enrollTitle">
+    <div class="enroll__shell">
+      <aside class="enroll__side">
+        <svg class="enroll__logo"><use href="#logo-mdm"/></svg>
+        <h2 id="enrollTitle">Pré-matrícula <span data-ano>2027</span></h2>
+        <p>4 passos rápidos. No final você recebe um protocolo e confirma com a secretaria.</p>
+        <ol class="enroll__steps" id="enrollSteps">
+          <li class="is-active"><i>1</i>Curso</li>
+          <li><i>2</i>Aluno</li>
+          <li><i>3</i>Contato</li>
+          <li><i>4</i>Revisão</li>
+        </ol>
+        <p class="enroll__safe">🔒 Seus dados são usados só para a sua matrícula.</p>
+      </aside>
+
+      <div class="enroll__main">
+        <button class="enroll__close" id="enrollClose" aria-label="Fechar">✕</button>
+        <div class="enroll__progress"><span id="enrollBar"></span></div>
+
+        <form id="enrollForm" novalidate>
+          <!-- passo 1 -->
+          <fieldset class="step is-active" data-step="1">
+            <legend>Qual curso você quer fazer?</legend>
+            <div class="opt-grid" id="optCursos"></div>
+            <p class="field-error" data-error-for="curso"></p>
+            <h4 class="sub">Turno de preferência</h4>
+            <div class="chips" id="optTurnos"></div>
+            <p class="field-error" data-error-for="turno"></p>
+            <label class="field">Como conheceu o MDM?
+              <select name="origem">
+                <option value="">Selecione (opcional)</option>
+                <option>Instagram</option><option>Indicação de amigo</option><option>Google</option><option>Passei na frente</option><option>Já fui aluno(a)</option><option>Outro</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <!-- passo 2 -->
+          <fieldset class="step" data-step="2">
+            <legend>Sobre o aluno</legend>
+            <label class="field">Nome completo*
+              <input name="nome" autocomplete="name" required minlength="5">
+              <span class="field-error" data-error-for="nome"></span>
+            </label>
+            <div class="field-row">
+              <label class="field">Data de nascimento*
+                <input name="nascimento" type="date" required>
+                <span class="field-error" data-error-for="nascimento"></span>
+              </label>
+              <label class="field">CPF <small>(opcional)</small>
+                <input name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+                <span class="field-error" data-error-for="cpf"></span>
+              </label>
+            </div>
+            <div class="field-row">
+              <label class="field">Série / situação*
+                <select name="serie" required id="optSeries"><option value="">Selecione</option></select>
+                <span class="field-error" data-error-for="serie"></span>
+              </label>
+              <label class="field">Escola atual <small>(opcional)</small>
+                <input name="escola" autocomplete="organization">
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- passo 3 -->
+          <fieldset class="step" data-step="3">
+            <legend>Como falamos com você?</legend>
+            <div class="field-row">
+              <label class="field">WhatsApp*
+                <input name="whatsapp" type="tel" inputmode="tel" placeholder="(81) 9 0000-0000" autocomplete="tel" required>
+                <span class="field-error" data-error-for="whatsapp"></span>
+              </label>
+              <label class="field">E-mail*
+                <input name="email" type="email" autocomplete="email" required>
+                <span class="field-error" data-error-for="email"></span>
+              </label>
+            </div>
+            <label class="field">Bairro / cidade
+              <input name="bairro" placeholder="Ex.: Boa Vista, Recife">
+            </label>
+            <div class="guardian" id="guardian" hidden>
+              <p class="guardian__note">O aluno é menor de idade, então precisamos de um responsável.</p>
+              <div class="field-row">
+                <label class="field">Nome do responsável*
+                  <input name="respNome">
+                  <span class="field-error" data-error-for="respNome"></span>
+                </label>
+                <label class="field">WhatsApp do responsável*
+                  <input name="respWhatsapp" type="tel" inputmode="tel" placeholder="(81) 9 0000-0000">
+                  <span class="field-error" data-error-for="respWhatsapp"></span>
+                </label>
+              </div>
+            </div>
+            <label class="field">Observações <small>(opcional)</small>
+              <textarea name="obs" rows="2" placeholder="Ex.: quero fazer ENEM e SSA, tenho irmão no MDM…"></textarea>
+            </label>
+          </fieldset>
+
+          <!-- passo 4 -->
+          <fieldset class="step" data-step="4">
+            <legend>Confere se está tudo certo</legend>
+            <dl class="review" id="review"></dl>
+            <label class="check">
+              <input type="checkbox" name="aceite" required>
+              <span>Autorizo o MDM a usar estes dados para entrar em contato sobre a minha matrícula (LGPD).</span>
+            </label>
+            <p class="field-error" data-error-for="aceite"></p>
+          </fieldset>
+
+          <!-- sucesso -->
+          <div class="step step--done" data-step="done">
+            <canvas class="confetti" id="confetti"></canvas>
+            <div class="done__badge"><svg><use href="#logo-mdm"/></svg></div>
+            <h3>Pré-matrícula feita! 🎉</h3>
+            <p>Seu protocolo é</p>
+            <div class="done__protocol" id="protocol">MDM-2027-0000</div>
+            <p class="done__text">Agora é só confirmar com a secretaria pelo WhatsApp. Eles te mandam valores, documentos e o início das aulas.</p>
+            <div class="done__actions">
+              <a class="btn btn--wa btn--lg" id="sendWa" target="_blank" rel="noopener" href="#">Confirmar pelo WhatsApp</a>
+              <button type="button" class="btn btn--line" id="printReceipt">Salvar comprovante</button>
+            </div>
+          </div>
+
+          <div class="enroll__nav" id="enrollNav">
+            <button type="button" class="btn btn--line" id="prevStep">Voltar</button>
+            <button type="submit" class="btn btn--purple" id="nextStep">Continuar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- comprovante para impressão -->
+  <section class="receipt" id="receipt" aria-hidden="true"></section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="assets/js/config.js" defer></script>
+  <script src="assets/js/matricula.js" defer></script>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
