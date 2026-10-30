@@ -41,7 +41,6 @@ body {
   font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 body.is-loading { overflow: hidden; }
 img { max-width: 100%; display: block; }
@@ -97,8 +96,9 @@ p { margin: 0; }
   backdrop-filter: blur(8px);
 }
 .pill b { color: var(--yellow); }
-.pill--live i { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 0 rgba(255,207,31,.7); animation: live 1.8s infinite; }
-@keyframes live { 0% { box-shadow: 0 0 0 0 rgba(255,207,31,.7);} 80%,100% { box-shadow: 0 0 0 10px rgba(255,207,31,0);} }
+.pill--live i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); }
+.pill--live i::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: var(--yellow); animation: live 1.8s infinite; }
+@keyframes live { 0% { transform: scale(1); opacity: .7; } 80%, 100% { transform: scale(3.2); opacity: 0; } }
 
 .eyebrow {
   display: inline-block; margin-bottom: 18px;
@@ -336,8 +336,9 @@ p { margin: 0; }
 @media (max-width: 640px) { .courses__grid { grid-template-columns: 1fr; } .course:nth-child(5) { grid-column: auto; } }
 
 /* ---------- Method ring ---------- */
-.method { position: relative; background: radial-gradient(80% 60% at 50% 60%, #4a14a0 0%, #22084a 50%, var(--ink) 100%); overflow: hidden; }
-.method__pin { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 110px 0 60px; }
+/* sticky em vez de pin via JS: o navegador segura a seção sem tremer no celular */
+.method { position: relative; height: 320vh; background: radial-gradient(80% 60% at 50% 60%, #4a14a0 0%, #22084a 50%, var(--ink) 100%); overflow: clip; }
+.method__pin { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 70px 0 30px; overflow: clip; }
 .method__head { text-align: center; max-width: 900px; }
 .ring-stage { height: 460px; perspective: 2400px; display: grid; place-items: center; margin-top: 50px; }
 .ring { --radius: 480px; position: relative; width: 300px; height: 330px; transform-style: preserve-3d; transform: rotateX(-8deg) rotateY(0deg); will-change: transform; }
@@ -346,7 +347,6 @@ p { margin: 0; }
   padding: 30px 26px; border-radius: 26px;
   background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
   box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.22), 0 40px 60px -30px rgba(0,0,0,.6);
-  backdrop-filter: blur(6px);
   backface-visibility: hidden;
   display: flex; flex-direction: column; justify-content: flex-end;
 }
@@ -653,6 +653,19 @@ p.field-error:not(:empty) { margin-top: 10px; }
 /* ---------- Reveal ---------- */
 [data-reveal] { opacity: 0; transform: translateY(40px); }
 .no-js [data-reveal], .reduced [data-reveal] { opacity: 1; transform: none; }
+
+/* ---------- Celular: corta efeitos que repintam a cada quadro ---------- */
+@media (max-width: 900px), (hover: none) {
+  .nav.is-scrolled { background: rgba(18, 3, 31, .94); backdrop-filter: none; }
+  .btn--glass, .pill, .chip3d { backdrop-filter: none; }
+  .btn--glass { --bg: rgba(255,255,255,.1); }
+  .hero__title .hl { animation: none; background: none; color: var(--yellow); -webkit-background-clip: border-box; background-clip: border-box; }
+  .enroll::backdrop { backdrop-filter: none; background: rgba(10, 1, 20, .85); }
+  .acard { animation: cardFloat 6s ease-in-out infinite alternate; }
+  .acard__shine { display: none; }
+}
+@keyframes cardFloat { from { transform: rotateX(4deg) rotateY(-10deg); } to { transform: rotateX(-2deg) rotateY(10deg); } }
+.is-offscreen, .is-offscreen * { animation-play-state: paused !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

@@ -9,10 +9,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const PURPLE = 0x7b2cf0;
 const PURPLE_DEEP = 0x3a0d77;
 const YELLOW = 0xffcf1f;
+let LOW = false; // modo leve: sem transmissão/iridescência (celulares e máquinas fracas)
 
 export function initHero3D(container) {
   const isMobile = matchMedia('(max-width: 900px)').matches;
   const lowPower = isMobile || (navigator.hardwareConcurrency || 8) <= 4;
+  LOW = lowPower;
 
   let renderer;
   try {
@@ -21,7 +23,8 @@ export function initHero3D(container) {
     document.documentElement.classList.add('no-webgl');
     return null;
   }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, lowPower ? 1.5 : 1.75));
+  let pixelRatio = Math.min(devicePixelRatio, isMobile ? 1.25 : lowPower ? 1.5 : 1.75);
+  renderer.setPixelRatio(pixelRatio);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
   container.appendChild(renderer.domElement);
@@ -66,6 +69,7 @@ export function initHero3D(container) {
     clearcoat: 1, clearcoatRoughness: 0.1,
     emissive: 0x2a0870, emissiveIntensity: 0.5
   });
+  if (lowPower) { faceMat.iridescence = 0; faceMat.sheen = 0; }
 
   const extrude = { depth: 0.24, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.035, bevelSegments: 6, curveSegments: 72 };
 
@@ -119,7 +123,7 @@ export function initHero3D(container) {
   cap.rotation.set(0.32, 0, -0.08);
   logoRoot.add(cap);
 
-  const capMat = new THREE.MeshPhysicalMaterial({ color: 0x24093f, roughness: 0.4, metalness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.2, sheen: 1, sheenColor: new THREE.Color(0x7b2cf0) });
+  const capMat = new THREE.MeshPhysicalMaterial({ color: 0x24093f, roughness: 0.4, metalness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.2, sheen: lowPower ? 0 : 1, sheenColor: new THREE.Color(0x7b2cf0) });
   const board = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.07, 1.5, 1, 1, 1), capMat);
   board.rotation.y = Math.PI / 4;
   cap.add(board);
@@ -227,8 +231,10 @@ export function initHero3D(container) {
   let raf = 0;
   let last = performance.now();
   let elapsed = 0;
+  const perf = { sum: 0, n: 0 };
   const prevCapPos = new THREE.Vector3();
   const capWorld = new THREE.Vector3();
+  const capVel = new THREE.Vector3();
 
   const onPointer = (e) => {
     pointer.tx = (e.clientX / innerWidth) * 2 - 1;
@@ -310,7 +316,7 @@ export function initHero3D(container) {
 
     // física da borla: reage à aceleração do capelo
     cap.getWorldPosition(capWorld);
-    const vel = capWorld.clone().sub(prevCapPos);
+    const vel = capVel.subVectors(capWorld, prevCapPos);
     prevCapPos.copy(capWorld);
     const k = 38, damp = 3.2;
     tassel.vz += (-tassel.az * k - tassel.vz * damp) * dt + vel.x * 6;
@@ -348,7 +354,22 @@ export function initHero3D(container) {
     camera.position.y += (0.2 - pointer.y * 0.35 - camera.position.y) * 0.04;
     camera.lookAt(base.x * 0.1, base.y * 0.2, 0);
 
-    if (composer) composer.render(); else renderer.render(scene, camera);
+    // qualidade adaptativa: se a média passar de ~22ms/quadro, reduz a resolução uma vez
+    perf.sum += dt; perf.n++;
+    if (perf.n === 90) {
+      if (perf.sum / perf.n > 0.022 && pixelRatio > 0.9) {
+        pixelRatio = Math.max(0.85, pixelRatio - 0.35);
+        renderer.setPixelRatio(pixelRatio);
+        layout();
+        particles.geometry.setDrawRange(0, Math.floor(pCount / 2));
+      }
+      perf.sum = 0; perf.n = 0;
+    }
+
+    // quase fora da tela: não gasta GPU desenhando
+    if (scrollP < 0.92) {
+      if (composer) composer.render(); else renderer.render(scene, camera);
+    }
     raf = requestAnimationFrame(tick);
   }
 
@@ -478,7 +499,11 @@ function makeTriangle() {
   outer.holes.push(hole);
   const geo = new THREE.ExtrudeGeometry(outer, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
   geo.center();
-  return new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({ color: 0xc9a8ff, transmission: 0.9, thickness: 0.3, roughness: 0.08, ior: 1.4, transparent: true, opacity: 0.9 }));
+  // transmissão exige um passe extra de render da cena inteira: só no desktop
+  const mat = LOW
+    ? new THREE.MeshStandardMaterial({ color: 0xc9a8ff, roughness: 0.15, metalness: 0.3, transparent: true, opacity: 0.6 })
+    : new THREE.MeshPhysicalMaterial({ color: 0xc9a8ff, transmission: 0.9, thickness: 0.3, roughness: 0.08, ior: 1.4, transparent: true, opacity: 0.9 });
+  return new THREE.Mesh(geo, mat);
 }
 
 function makeDNA() {
@@ -500,8 +525,8 @@ function makeDNA() {
 }
 
 function makeGlassSphere(rad) {
-  return new THREE.Mesh(
-    new THREE.SphereGeometry(rad, 48, 48),
-    new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 1, thickness: 0.6, roughness: 0.02, ior: 1.5, iridescence: 1, iridescenceIOR: 1.3, clearcoat: 1 })
-  );
+  const mat = LOW
+    ? new THREE.MeshStandardMaterial({ color: 0xd9c4ff, roughness: 0.05, metalness: 0.6, transparent: true, opacity: 0.45 })
+    : new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 1, thickness: 0.6, roughness: 0.02, ior: 1.5, iridescence: 1, iridescenceIOR: 1.3, clearcoat: 1 });
+  return new THREE.Mesh(new THREE.SphereGeometry(rad, LOW ? 24 : 48, LOW ? 24 : 48), mat);
 }

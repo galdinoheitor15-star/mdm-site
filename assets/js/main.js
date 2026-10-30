@@ -9,6 +9,8 @@ const { gsap, ScrollTrigger } = window;
 document.body.classList.add('is-loading');
 if (reduced) document.documentElement.classList.add('reduced');
 gsap.registerPlugin(ScrollTrigger);
+// no celular a barra de endereço some/aparece ao rolar; sem isso o ScrollTrigger recalcula tudo e engasga
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 /* ---------- Config → página ---------- */
 $$('[data-cfg]').forEach(el => { const v = CFG[el.dataset.cfg]; if (v) el.textContent = v; });
@@ -117,13 +119,19 @@ if (finePointer) {
 
 /* ---------- Nav ---------- */
 const nav = $('#nav');
+const mobileCta = $('.mobile-cta');
+const mobileMenu = $('#mobileMenu');
 let lastY = 0;
+let docH = document.body.scrollHeight, viewH = innerHeight;
+addEventListener('resize', () => { docH = document.body.scrollHeight; viewH = innerHeight; }, { passive: true });
+ScrollTrigger.addEventListener('refresh', () => { docH = document.body.scrollHeight; viewH = innerHeight; });
+// lê só scrollY (sem medir layout) para não forçar recálculo a cada evento de rolagem
 const onScroll = () => {
   const y = scrollY;
   nav.classList.toggle('is-scrolled', y > 30);
-  nav.classList.toggle('is-hidden', y > 500 && y > lastY && !$('#mobileMenu').classList.contains('is-open'));
+  nav.classList.toggle('is-hidden', y > 500 && y > lastY && !mobileMenu.classList.contains('is-open'));
   lastY = y;
-  $('.mobile-cta')?.classList.toggle('is-visible', y > innerHeight * 0.8 && y < document.body.scrollHeight - innerHeight * 1.6);
+  mobileCta?.classList.toggle('is-visible', y > viewH * 0.8 && y < docH - viewH * 1.6);
 };
 addEventListener('scroll', onScroll, { passive: true });
 
@@ -195,12 +203,10 @@ const step = 360 / cards.length;
 cards.forEach((c, i) => { c.style.transform = `rotateY(${i * step}deg) translateZ(var(--radius))`; });
 gsap.set(ring, { rotateX: -8 });
 
-const mm = gsap.matchMedia();
-mm.add('(min-width: 1px)', () => {
-  gsap.to(ring, {
-    rotateY: -(360 - step), ease: 'none',
-    scrollTrigger: { trigger: '.method__pin', start: 'top top', end: () => `+=${innerHeight * 2.2}`, scrub: 1, pin: true, anticipatePin: 1, refreshPriority: 1 }
-  });
+// a seção fica presa via CSS sticky; aqui só ligamos a rotação ao progresso da rolagem
+gsap.to(ring, {
+  rotateY: -(360 - step), ease: 'none',
+  scrollTrigger: { trigger: '.method', start: 'top top', end: 'bottom bottom', scrub: finePointer ? 1 : 0.4 }
 });
 
 /* ---------- Foto em camadas ---------- */
@@ -237,7 +243,6 @@ aForm.addEventListener('input', updateCard);
 aForm.addEventListener('submit', e => e.preventDefault());
 tilt(acard, { max: 14 });
 acard.addEventListener('click', () => acard.classList.toggle('is-flipped'));
-if (!finePointer && !reduced) gsap.to(acard, { '--ry': '10deg', '--rx': '4deg', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
 $('#downloadCard').addEventListener('click', async () => {
   await document.fonts.ready;
@@ -299,7 +304,7 @@ function roundRect(g, x, y, w, h, r) {
 /* ---------- Logo 3D em camadas (CTA final) ---------- */
 const stack = document.createElement('div');
 stack.className = 'logo-stack';
-const layers = 14;
+const layers = finePointer ? 14 : 6;
 for (let i = 0; i < layers; i++) {
   const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   s.innerHTML = '<use href="#logo-mdm"/>';
@@ -308,6 +313,10 @@ for (let i = 0; i < layers; i++) {
   stack.appendChild(s);
 }
 $('#logoStack').appendChild(stack);
+
+// animações infinitas de CSS pausam quando a seção sai da tela
+const offscreenIO = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('is-offscreen', !e.isIntersecting)));
+$$('.hero, .tape, .approved, .final').forEach(el => offscreenIO.observe(el));
 
 /* ---------- Botões magnéticos ---------- */
 if (finePointer && !reduced) {
