@@ -288,6 +288,13 @@ export function initHero3D(container) {
   function tick(now) {
     raf = 0;
     if (!visible || document.hidden) return;
+    // celular: 30 fps bastam para o 3D e deixam folga para a rolagem;
+    // depois que o hero sai de vista quase todo, para de calcular e desenhar
+    if (isMobile && (now - last < 31 || scrollP > 0.45)) {
+      if (scrollP > 0.45) last = now;
+      raf = requestAnimationFrame(tick);
+      return;
+    }
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
     elapsed += dt;
@@ -357,7 +364,7 @@ export function initHero3D(container) {
     // qualidade adaptativa: se a média passar de ~22ms/quadro, reduz a resolução uma vez
     perf.sum += dt; perf.n++;
     if (perf.n === 90) {
-      if (perf.sum / perf.n > 0.022 && pixelRatio > 0.9) {
+      if (perf.sum / perf.n > (isMobile ? 0.042 : 0.022) && pixelRatio > 0.9) {
         pixelRatio = Math.max(0.85, pixelRatio - 0.35);
         renderer.setPixelRatio(pixelRatio);
         layout();

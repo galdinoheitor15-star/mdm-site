@@ -40,7 +40,8 @@ $('#coursesGrid').innerHTML = CFG.cursos.map(c => `
 
 /* ---------- Scroll suave ---------- */
 let lenis = null;
-if (!reduced && window.Lenis) {
+// rolagem suave só com mouse; no toque a rolagem nativa do celular é mais fluida
+if (!reduced && finePointer && window.Lenis) {
   lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(t => lenis.raf(t * 1000));
@@ -104,7 +105,8 @@ ScrollTrigger.create({
   trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true,
   onUpdate: self => hero3d?.setScroll(self.progress)
 });
-gsap.to('.hero__content', { yPercent: 18, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
+// parallax por JS fica atrasado em relação à rolagem nativa do celular e parece tremer: só no desktop
+if (finePointer) gsap.to('.hero__content', { yPercent: 18, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
 
 if (finePointer) {
   const chips = $$('.chip3d');
@@ -151,13 +153,24 @@ burger.addEventListener('click', () => {
 });
 $$('#mobileMenu a, #mobileMenu button').forEach(el => el.addEventListener('click', closeMenu));
 
+/* ---------- Mapa sob demanda ---------- */
+$('#mapLoad').addEventListener('click', e => {
+  const q = encodeURIComponent(CFG.endereco);
+  e.currentTarget.outerHTML = `<iframe title="Mapa da unidade MDM" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${q}&output=embed"></iframe>`;
+});
+
 /* ---------- Revelações ---------- */
-if (!reduced) {
-  ScrollTrigger.batch('[data-reveal]', {
-    start: 'top 88%',
-    onEnter: els => gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08, overwrite: true })
+// transição de CSS (roda no compositor, fora da thread principal) disparada por IntersectionObserver
+const revealIO = new IntersectionObserver(entries => {
+  let i = 0;
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.style.transitionDelay = `${Math.min(i++, 5) * 70}ms`;
+    e.target.classList.add('is-in');
+    revealIO.unobserve(e.target);
   });
-}
+}, { rootMargin: '0px 0px -10% 0px' });
+$$('[data-reveal]').forEach(el => revealIO.observe(el));
 
 /* ---------- Contadores ---------- */
 $$('[data-count]').forEach(el => {
@@ -211,7 +224,7 @@ gsap.to(ring, {
 
 /* ---------- Foto em camadas ---------- */
 const photo = $('#dreamsPhoto');
-if (!reduced) {
+if (!reduced && finePointer) {
   gsap.to('.dreams__layer--back', { rotate: 25, ease: 'none', scrollTrigger: { trigger: photo, start: 'top bottom', end: 'bottom top', scrub: true } });
   gsap.to('.fp1', { y: -60, ease: 'none', scrollTrigger: { trigger: photo, start: 'top bottom', end: 'bottom top', scrub: true } });
   gsap.to('.fp2', { y: -110, ease: 'none', scrollTrigger: { trigger: photo, start: 'top bottom', end: 'bottom top', scrub: true } });

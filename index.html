@@ -316,7 +316,12 @@
           </div>
         </div>
         <div class="place__map" data-reveal>
-          <iframe title="Mapa da unidade MDM" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Rua+do+Riachuelo,+529+-+Boa+Vista,+Recife+-+PE&output=embed"></iframe>
+          <!-- o mapa do Google só carrega no toque: o iframe dele pesa muito durante a rolagem -->
+          <button class="map-load" id="mapLoad" type="button">
+            <span class="map-load__pin">📍</span>
+            <b data-cfg="endereco">Rua do Riachuelo, 529 – Boa Vista, Recife – PE</b>
+            <span class="btn btn--purple">Ver no mapa</span>
+          </button>
         </div>
       </div>
     </section>
@@ -366,7 +371,7 @@
         <span class="pill pill--live"><i></i> Turmas {ANO} formando agora</span>
         <h2 data-reveal>Sua aprovação começa com <span class="hl">um clique</span>.</h2>
         <p data-reveal>Leva menos de 2 minutos. A secretaria confirma tudo com você pelo WhatsApp.</p>
-        <button class="btn btn--yellow btn--xl magnetic" data-matricula data-reveal>Fazer minha pré-matrícula</button>
+        <button class="btn btn--yellow btn--xl magnetic" data-matricula>Fazer minha pré-matrícula</button>
       </div>
     </section>
   </main>
