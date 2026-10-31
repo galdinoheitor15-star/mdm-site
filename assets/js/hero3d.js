@@ -9,22 +9,34 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const PURPLE = 0x7b2cf0;
 const PURPLE_DEEP = 0x3a0d77;
 const YELLOW = 0xffcf1f;
-let LOW = false; // modo leve: sem transmissão/iridescência (celulares e máquinas fracas)
+let LOW = false;  // modo leve: sem transmissão/iridescência/clearcoat (celulares e máquinas fracas)
+let LITE = false; // sem vidro com transmissão (placa de vídeo integrada de notebook)
 
 export function initHero3D(container) {
   const isMobile = matchMedia('(max-width: 900px)').matches;
-  const lowPower = isMobile || (navigator.hardwareConcurrency || 8) <= 4;
-  LOW = lowPower;
 
   let renderer;
   try {
-    // celular: canvas transparente e menor (só a parte de cima do hero); o fundo vem do CSS
-    renderer = new THREE.WebGLRenderer({ antialias: !lowPower, alpha: isMobile, powerPreference: 'high-performance' });
+    // celular: canvas transparente e menor (só a parte de cima do hero); o fundo vem do CSS.
+    // sem antialias no canvas: no desktop a cena é desenhada pelo composer (bloom), e o MSAA da tela
+    // não teria efeito nenhum, só gastaria memória e banda da GPU
+    renderer = new THREE.WebGLRenderer({ antialias: false, alpha: isMobile, powerPreference: 'high-performance' });
   } catch (e) {
     document.documentElement.classList.add('no-webgl');
     return null;
   }
-  let pixelRatio = Math.min(devicePixelRatio, isMobile ? 1.25 : lowPower ? 1.5 : 1.75);
+
+  // nível da placa de vídeo: notebook com vídeo integrado (Intel/AMD) engasgava na entrada com
+  // vidro (transmissão = cena desenhada 2x por quadro) + iridescência + bloom em resolução cheia
+  const gpu = detectGpuTier(renderer);
+  const lowPower = isMobile || gpu === 'low' || (navigator.hardwareConcurrency || 8) <= 4;
+  const midPower = !lowPower && gpu === 'mid';
+  LOW = lowPower;
+  LITE = lowPower || midPower;
+  // efeitos de vidro fosco do CSS por cima do canvas também pesam nessas placas
+  if (LITE) document.documentElement.classList.add('gpu-lite');
+
+  let pixelRatio = Math.min(devicePixelRatio, isMobile ? 1.25 : lowPower ? 1.25 : midPower ? 1 : 1.75);
   renderer.setPixelRatio(pixelRatio);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
@@ -233,6 +245,9 @@ export function initHero3D(container) {
   let last = performance.now();
   let elapsed = 0;
   const perf = { sum: 0, n: 0 };
+  // a entrada (cortina subindo + textos + giro do logo) é o trecho mais pesado; medir ali
+  // fazia a qualidade cair no meio da animação, e a troca de resolução é justamente a travada
+  const WARMUP = 3;
   let halfRate = false;
   const prevCapPos = new THREE.Vector3();
   const capWorld = new THREE.Vector3();
@@ -364,8 +379,9 @@ export function initHero3D(container) {
     camera.position.y += (0.2 - pointer.y * 0.35 - camera.position.y) * 0.04;
     camera.lookAt(base.x * 0.1, base.y * 0.2, 0);
 
-    // qualidade adaptativa: média acima de ~22ms/quadro → 1º reduz resolução e partículas, 2º cai para 30 fps
-    perf.sum += dt; perf.n++;
+    // qualidade adaptativa (só depois da entrada): média acima de ~22ms/quadro →
+    // 1º reduz resolução e partículas, 2º cai para 30 fps
+    if (elapsed > WARMUP) { perf.sum += dt; perf.n++; }
     if (perf.n === 90) {
       const slow = perf.sum / perf.n > 0.022;
       if (slow && pixelRatio > 0.9) {
@@ -373,6 +389,7 @@ export function initHero3D(container) {
         renderer.setPixelRatio(pixelRatio);
         layout();
         particles.geometry.setDrawRange(0, Math.floor(pCount / 2));
+        document.documentElement.classList.add('gpu-lite');
       } else if (slow && !halfRate) {
         halfRate = true;
       }
@@ -405,6 +422,19 @@ export function initHero3D(container) {
 }
 
 /* ================= helpers ================= */
+
+// 'high' = placa dedicada; 'mid' = vídeo integrado (notebooks); 'low' = renderização por software
+function detectGpuTier(renderer) {
+  let name = '';
+  try {
+    const gl = renderer.getContext();
+    const ext = gl.getExtension('WEBGL_debug_renderer_info');
+    name = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || '').toLowerCase();
+  } catch (e) { /* sem informação: trata como placa boa e deixa a qualidade adaptativa decidir */ }
+  if (/swiftshader|llvmpipe|softpipe|software|basic render/.test(name)) return 'low';
+  if (/intel|iris|uhd|hd graphics|radeon(\(tm\))? (vega \d+ )?graphics|radeon vega|mali|adreno|powervr/.test(name)) return 'mid';
+  return 'high';
+}
 
 function easeOutBack(t) {
   const c1 = 1.4, c3 = c1 + 1;
@@ -519,8 +549,8 @@ function makeTriangle() {
   outer.holes.push(hole);
   const geo = new THREE.ExtrudeGeometry(outer, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
   geo.center();
-  // transmissão exige um passe extra de render da cena inteira: só no desktop
-  const mat = LOW
+  // transmissão exige um passe extra de render da cena inteira: só com placa de vídeo dedicada
+  const mat = LITE
     ? new THREE.MeshStandardMaterial({ color: 0xc9a8ff, roughness: 0.15, metalness: 0.3, transparent: true, opacity: 0.6 })
     : new THREE.MeshPhysicalMaterial({ color: 0xc9a8ff, transmission: 0.9, thickness: 0.3, roughness: 0.08, ior: 1.4, transparent: true, opacity: 0.9 });
   return new THREE.Mesh(geo, mat);
@@ -545,7 +575,7 @@ function makeDNA() {
 }
 
 function makeGlassSphere(rad) {
-  const mat = LOW
+  const mat = LITE
     ? new THREE.MeshStandardMaterial({ color: 0xd9c4ff, roughness: 0.05, metalness: 0.6, transparent: true, opacity: 0.45 })
     : new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 1, thickness: 0.6, roughness: 0.02, ior: 1.5, iridescence: 1, iridescenceIOR: 1.3, clearcoat: 1 });
   return new THREE.Mesh(new THREE.SphereGeometry(rad, LOW ? 24 : 48, LOW ? 24 : 48), mat);
