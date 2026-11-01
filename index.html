@@ -450,7 +450,7 @@
           <fieldset class="step" data-step="2">
             <legend>Sobre o aluno</legend>
             <label class="field">Nome completo*
-              <input name="nome" autocomplete="name" required minlength="5">
+              <input maxlength="80" name="nome" autocomplete="name" required minlength="5">
               <span class="field-error" data-error-for="nome"></span>
             </label>
             <div class="field-row">
@@ -469,7 +469,7 @@
                 <span class="field-error" data-error-for="serie"></span>
               </label>
               <label class="field">Escola atual <small>(opcional)</small>
-                <input name="escola" autocomplete="organization">
+                <input maxlength="80" name="escola" autocomplete="organization">
               </label>
             </div>
           </fieldset>
@@ -479,32 +479,32 @@
             <legend>Como falamos com você?</legend>
             <div class="field-row">
               <label class="field">WhatsApp*
-                <input name="whatsapp" type="tel" inputmode="tel" placeholder="(81) 9 0000-0000" autocomplete="tel" required>
+                <input maxlength="20" name="whatsapp" type="tel" inputmode="tel" placeholder="(81) 9 0000-0000" autocomplete="tel" required>
                 <span class="field-error" data-error-for="whatsapp"></span>
               </label>
               <label class="field">E-mail*
-                <input name="email" type="email" autocomplete="email" required>
+                <input maxlength="120" name="email" type="email" autocomplete="email" required>
                 <span class="field-error" data-error-for="email"></span>
               </label>
             </div>
             <label class="field">Bairro / cidade
-              <input name="bairro" placeholder="Ex.: Boa Vista, Recife">
+              <input maxlength="60" name="bairro" placeholder="Ex.: Boa Vista, Recife">
             </label>
             <div class="guardian" id="guardian" hidden>
               <p class="guardian__note">O aluno é menor de idade, então precisamos de um responsável.</p>
               <div class="field-row">
                 <label class="field">Nome do responsável*
-                  <input name="respNome">
+                  <input maxlength="80" name="respNome">
                   <span class="field-error" data-error-for="respNome"></span>
                 </label>
                 <label class="field">WhatsApp do responsável*
-                  <input name="respWhatsapp" type="tel" inputmode="tel" placeholder="(81) 9 0000-0000">
+                  <input maxlength="20" name="respWhatsapp" type="tel" inputmode="tel" placeholder="(81) 9 0000-0000">
                   <span class="field-error" data-error-for="respWhatsapp"></span>
                 </label>
               </div>
             </div>
             <label class="field">Observações <small>(opcional)</small>
-              <textarea name="obs" rows="2" placeholder="Ex.: quero fazer ENEM e SSA, tenho irmão no MDM…"></textarea>
+              <textarea maxlength="300" name="obs" rows="2" placeholder="Ex.: quero fazer ENEM e SSA, tenho irmão no MDM…"></textarea>
             </label>
           </fieldset>
 
